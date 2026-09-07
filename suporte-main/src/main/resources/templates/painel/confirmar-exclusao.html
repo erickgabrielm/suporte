@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Confirmar Exclusão', 'Confirmar exclusão de chamado de suporte SENAI')}"></head>
+<body class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <div th:replace="~{fragments :: navbar}"></div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="container">
+      <div class="breadcrumb">
+        <a th:href="@{/painel}">Painel</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>Excluir Chamado</span>
+      </div>
+      <h1 class="page-title">🗑️ Excluir Chamado</h1>
+      <p class="page-subtitle">Esta ação é permanente e não pode ser desfeita</p>
+    </div>
+  </div>
+
+  <main class="main-content" id="main">
+    <div class="container">
+      <div class="confirm-wrap animate-fade-up">
+
+        <!-- Banner de alerta -->
+        <div class="confirm-danger-banner">
+          <div class="confirm-danger-icon">🚨</div>
+          <div>
+            <div class="confirm-danger-title">Atenção: Ação irreversível!</div>
+            <div class="confirm-danger-desc">
+              Ao confirmar, o chamado abaixo será <strong>excluído permanentemente</strong>
+              do sistema e não poderá ser recuperado.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card com dados do chamado -->
+        <div class="card mb-lg">
+          <div class="card-header">
+            <span class="card-title">📋 Chamado a ser excluído</span>
+            <span th:class="${'badge badge-' + #strings.toLowerCase(solicitacao.status.name()).replace('_', '-')}"
+                  th:text="${solicitacao.status.descricao}">
+              Status
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="info-grid">
+
+              <div class="info-item">
+                <span class="info-label">ID do Chamado</span>
+                <span class="info-value" style="color:var(--red);font-weight:700;"
+                      th:text="'#' + ${solicitacao.id}">#ID</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Solicitante</span>
+                <span class="info-value" th:text="${solicitacao.nomeSolicitante}">Nome</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">NIF</span>
+                <span class="info-value" th:text="${solicitacao.nif}">NIF</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Sala</span>
+                <span class="info-value" th:text="${solicitacao.numeroSala}">Sala</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Patrimônio</span>
+                <span class="info-value" th:text="${solicitacao.codigoPatrimonio}">PAT</span>
+              </div>
+
+              <div class="info-item">
+                <span class="info-label">Tipo</span>
+                <span th:class="${'badge badge-' + #strings.toLowerCase(solicitacao.tipoProblema.name())}"
+                      th:text="${solicitacao.tipoProblema.descricao}">
+                  Tipo
+                </span>
+              </div>
+
+              <div class="info-item col-span-2">
+                <span class="info-label">Descrição</span>
+                <span class="info-value" th:text="${solicitacao.descricaoProblema}">Descrição</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de ação -->
+        <div class="card">
+          <div class="card-body" style="padding:24px 28px;">
+
+            <p style="font-size:0.9rem;color:var(--text-2);margin-bottom:20px;text-align:center;">
+              Tem certeza que deseja excluir permanentemente o chamado
+              <strong th:text="'#' + ${solicitacao.id}">#ID</strong>
+              de <strong th:text="${solicitacao.nomeSolicitante}">Nome</strong>?
+            </p>
+
+            <div class="d-flex gap-md justify-center flex-wrap">
+
+              <!-- Cancelar -->
+              <a th:href="@{/painel}"
+                 id="btn-cancelar"
+                 class="btn btn-ghost btn-lg"
+                 style="min-width:180px;">
+                ← Não, Cancelar
+              </a>
+
+              <!-- Confirmar exclusão -->
+              <form th:action="@{/painel/excluir/{id}(id=${solicitacao.id})}"
+                    method="post"
+                    id="form-excluir">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button
+                  type="submit"
+                  id="btn-confirmar-exclusao"
+                  class="btn btn-danger btn-lg"
+                  style="min-width:180px;"
+                  onclick="return confirm('Última confirmação: excluir chamado #'+this.closest('form').action.split('/').slice(-2,-1)[0]+' permanentemente?')">
+                  🗑️ Sim, Excluir
+                </button>
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /confirm-wrap -->
+    </div><!-- /container -->
+  </main>
+
+  <!-- FOOTER -->
+  <div th:replace="~{fragments :: footer}"></div>
+
+</body>
+</html>

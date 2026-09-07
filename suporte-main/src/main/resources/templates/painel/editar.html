@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Editar Chamado', 'Editar chamado de suporte técnico SENAI')}"></head>
+<body class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <div th:replace="~{fragments :: navbar}"></div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="container">
+      <div class="breadcrumb">
+        <a th:href="@{/painel}">Painel</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>Editar Chamado</span>
+      </div>
+      <div class="page-header-row">
+        <div>
+          <h1 class="page-title">✏️ Editar Chamado
+            <span style="font-size:1rem;font-weight:500;color:var(--text-muted);"
+                  th:text="'#' + ${solicitacao.id}"></span>
+          </h1>
+          <p class="page-subtitle">Edite as informações do chamado de suporte</p>
+        </div>
+        <a th:href="@{/painel}" id="btn-voltar-topo" class="btn btn-ghost">
+          ← Voltar ao Painel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-content" id="main">
+    <div class="container">
+      <div class="form-page-wrap animate-fade-up">
+
+        <!-- Flash messages -->
+        <div th:replace="~{fragments :: flash-messages}"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🧾 Dados do Chamado</span>
+            <span class="text-sm text-muted">Campos com <span style="color:var(--red)">*</span> são obrigatórios</span>
+          </div>
+
+          <form th:action="@{/painel/editar/{id}(id=${solicitacao.id})}"
+                th:object="${solicitacao}"
+                method="post"
+                id="form-editar"
+                novalidate>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" th:field="*{id}">
+
+            <div class="card-body">
+
+              <!-- ── Identificação ── -->
+              <p class="form-section-title">👤 Identificação</p>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="nif" class="form-label">NIF <span class="req">*</span></label>
+                  <input
+                    type="text"
+                    id="nif"
+                    th:field="*{nif}"
+                    th:class="${#fields.hasErrors('nif')} ? 'form-control is-invalid' : 'form-control'"
+                    placeholder="Ex: 12345678">
+                  <div th:if="${#fields.hasErrors('nif')}" class="form-error">
+                    <span th:errors="*{nif}"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="nomeSolicitante" class="form-label">
+                    Nome do Solicitante <span class="req">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="nomeSolicitante"
+                    th:field="*{nomeSolicitante}"
+                    th:class="${#fields.hasErrors('nomeSolicitante')} ? 'form-control is-invalid' : 'form-control'"
+                    placeholder="Nome completo">
+                  <div th:if="${#fields.hasErrors('nomeSolicitante')}" class="form-error">
+                    <span th:errors="*{nomeSolicitante}"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Local ── -->
+              <p class="form-section-title mt-md">🏫 Local e Equipamento</p>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="numeroSala" class="form-label">
+                    Número da Sala <span class="req">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="numeroSala"
+                    th:field="*{numeroSala}"
+                    th:class="${#fields.hasErrors('numeroSala')} ? 'form-control is-invalid' : 'form-control'"
+                    placeholder="Ex: 101 ou Lab-3">
+                  <div th:if="${#fields.hasErrors('numeroSala')}" class="form-error">
+                    <span th:errors="*{numeroSala}"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="codigoPatrimonio" class="form-label">
+                    Código do Patrimônio <span class="req">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="codigoPatrimonio"
+                    th:field="*{codigoPatrimonio}"
+                    th:class="${#fields.hasErrors('codigoPatrimonio')} ? 'form-control is-invalid' : 'form-control'"
+                    placeholder="Ex: PAT-0042">
+                  <div th:if="${#fields.hasErrors('codigoPatrimonio')}" class="form-error">
+                    <span th:errors="*{codigoPatrimonio}"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Problema ── -->
+              <p class="form-section-title mt-md">⚠️ Problema e Status</p>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="tipoProblema" class="form-label">
+                    Tipo de Problema <span class="req">*</span>
+                  </label>
+                  <select
+                    id="tipoProblema"
+                    th:field="*{tipoProblema}"
+                    th:class="${#fields.hasErrors('tipoProblema')} ? 'form-control is-invalid' : 'form-control'">
+                    <option value="" disabled>— Selecione o tipo —</option>
+                    <option th:each="tipo : ${tipos}"
+                            th:value="${tipo}"
+                            th:text="${tipo.descricao}">
+                    </option>
+                  </select>
+                  <div th:if="${#fields.hasErrors('tipoProblema')}" class="form-error">
+                    <span th:errors="*{tipoProblema}"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="status" class="form-label">
+                    Status <span class="req">*</span>
+                  </label>
+                  <select
+                    id="status"
+                    th:field="*{status}"
+                    class="form-control">
+                    <option th:each="s : ${statusList}"
+                            th:value="${s}"
+                            th:text="${s.descricao}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="descricaoProblema" class="form-label">
+                  Descrição do Problema <span class="req">*</span>
+                </label>
+                <textarea
+                  id="descricaoProblema"
+                  th:field="*{descricaoProblema}"
+                  th:class="${#fields.hasErrors('descricaoProblema')} ? 'form-control is-invalid' : 'form-control'"
+                  rows="5"
+                  placeholder="Descreva o problema detalhadamente..."></textarea>
+                <div th:if="${#fields.hasErrors('descricaoProblema')}" class="form-error">
+                  <span th:errors="*{descricaoProblema}"></span>
+                </div>
+              </div>
+
+            </div><!-- /card-body -->
+
+            <div class="card-footer">
+              <a th:href="@{/painel}" id="btn-cancelar" class="btn btn-ghost">
+                ← Cancelar
+              </a>
+              <button type="submit" id="btn-salvar" class="btn btn-primary btn-lg">
+                💾 Salvar Alterações
+              </button>
+            </div>
+
+          </form>
+        </div><!-- /card -->
+
+      </div><!-- /form-page-wrap -->
+    </div><!-- /container -->
+  </main>
+
+  <!-- FOOTER -->
+  <div th:replace="~{fragments :: footer}"></div>
+
+</body>
+</html>

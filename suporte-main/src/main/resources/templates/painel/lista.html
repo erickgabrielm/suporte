@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Painel Técnico', 'Painel de gerenciamento de chamados de suporte SENAI')}"></head>
+<body class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <div th:replace="~{fragments :: navbar}"></div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header-row">
+        <div class="page-header-left">
+          <h1 class="page-title">⚙️ Painel Técnico</h1>
+          <p class="page-subtitle">
+            Gerencie os chamados de suporte da instituição
+          </p>
+        </div>
+        <div>
+          <a th:href="@{/solicitacao}" id="btn-novo-chamado" class="btn btn-primary">
+            + Novo Chamado
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-content" id="main">
+    <div class="container">
+
+      <!-- Flash messages -->
+      <div th:replace="~{fragments :: flash-messages}"></div>
+
+      <!-- ESTATÍSTICAS -->
+      <div class="stats-row stagger" id="stats-row">
+        <div class="stat-card stat-total hover-lift">
+          <div class="stat-card-accent"></div>
+          <div class="stat-icon">📋</div>
+          <div class="stat-value" id="stat-total" th:text="${#lists.size(solicitacoes)}">0</div>
+          <div class="stat-label">Total de Chamados</div>
+        </div>
+        <div class="stat-card stat-pendente hover-lift">
+          <div class="stat-card-accent"></div>
+          <div class="stat-icon">⏳</div>
+          <div class="stat-value" id="stat-pendente"
+               th:text="${#lists.size(solicitacoes.?[status.name() == 'PENDENTE'])}">0</div>
+          <div class="stat-label">Pendentes</div>
+        </div>
+        <div class="stat-card stat-andamento hover-lift">
+          <div class="stat-card-accent"></div>
+          <div class="stat-icon">🔧</div>
+          <div class="stat-value" id="stat-andamento"
+               th:text="${#lists.size(solicitacoes.?[status.name() == 'EM_ANDAMENTO'])}">0</div>
+          <div class="stat-label">Em Andamento</div>
+        </div>
+        <div class="stat-card stat-concluido hover-lift">
+          <div class="stat-card-accent"></div>
+          <div class="stat-icon">✅</div>
+          <div class="stat-value" id="stat-concluido"
+               th:text="${#lists.size(solicitacoes.?[status.name() == 'CONCLUIDO'])}">0</div>
+          <div class="stat-label">Concluídos</div>
+        </div>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="filter-bar animate-fade-in">
+        <form th:action="@{/painel}" method="get" id="form-filtro">
+
+          <!-- Tipo -->
+          <div class="filter-group">
+            <label class="filter-label" for="filtro-tipo">Tipo</label>
+            <select class="form-control" name="tipo" id="filtro-tipo">
+              <option value="">Todos os tipos</option>
+              <option th:each="t : ${tipos}"
+                      th:value="${t}"
+                      th:text="${t.descricao}"
+                      th:selected="${filtroTipo == t}">
+              </option>
+            </select>
+          </div>
+
+          <!-- Status -->
+          <div class="filter-group">
+            <label class="filter-label" for="filtro-status">Status</label>
+            <select class="form-control" name="status" id="filtro-status">
+              <option value="">Todos os status</option>
+              <option th:each="s : ${statusList}"
+                      th:value="${s}"
+                      th:text="${s.descricao}"
+                      th:selected="${filtroStatus == s}">
+              </option>
+            </select>
+          </div>
+
+          <!-- Busca por nome -->
+          <div class="filter-group filter-search">
+            <label class="filter-label" for="filtro-nome">Buscar solicitante</label>
+            <input
+              type="text"
+              class="form-control"
+              name="nome"
+              id="filtro-nome"
+              th:value="${filtroNome}"
+              placeholder="🔍 Nome do solicitante...">
+          </div>
+
+          <!-- Botões -->
+          <div class="filter-group filter-actions">
+            <label class="filter-label visually-hidden">Ações</label>
+            <div class="d-flex gap-sm">
+              <button type="submit" id="btn-filtrar" class="btn btn-secondary">
+                Filtrar
+              </button>
+              <a th:href="@{/painel}" id="btn-limpar" class="btn btn-ghost">
+                Limpar
+              </a>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- TABELA DE CHAMADOS -->
+      <div class="table-wrapper animate-fade-in">
+        <table class="table" aria-label="Lista de chamados de suporte">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Solicitante</th>
+              <th scope="col">NIF</th>
+              <th scope="col">Sala</th>
+              <th scope="col">Patrimônio</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Status</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- Sem resultados -->
+            <tr th:if="${#lists.isEmpty(solicitacoes)}">
+              <td colspan="8">
+                <div class="table-empty">
+                  <div class="table-empty-icon">📭</div>
+                  <h4>Nenhum chamado encontrado</h4>
+                  <p>Tente ajustar os filtros ou aguarde novos chamados.</p>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Linhas de chamados -->
+            <tr th:each="s : ${solicitacoes}" th:id="'row-' + ${s.id}">
+
+              <td class="text-id" th:text="'#' + ${s.id}">#1</td>
+
+              <td class="text-name" th:text="${s.nomeSolicitante}">Nome</td>
+
+              <td class="text-muted text-sm" th:text="${s.nif}">NIF</td>
+
+              <td th:text="${s.numeroSala}">Sala</td>
+
+              <td class="text-sm text-muted" th:text="${s.codigoPatrimonio}">PAT</td>
+
+              <!-- Badge tipo -->
+              <td>
+                <span th:class="${'badge badge-' + #strings.toLowerCase(s.tipoProblema.name())}"
+                      th:text="${s.tipoProblema.descricao}">
+                  Tipo
+                </span>
+              </td>
+
+              <!-- Badge status -->
+              <td>
+                <span th:class="${'badge badge-' + #strings.toLowerCase(s.status.name()).replace('_', '-')}"
+                      th:text="${s.status.descricao}">
+                  Status
+                </span>
+              </td>
+
+              <!-- Ações -->
+              <td>
+                <div class="table-actions">
+
+                  <!-- Assumir (só se PENDENTE) -->
+                  <a th:if="${s.status.name() == 'PENDENTE'}"
+                     th:href="@{/painel/assumir/{id}(id=${s.id})}"
+                     th:id="'btn-assumir-' + ${s.id}"
+                     class="btn btn-secondary btn-sm"
+                     title="Assumir este chamado">
+                    ✋ Assumir
+                  </a>
+
+                  <!-- Concluir (só se EM_ANDAMENTO) -->
+                  <form th:if="${s.status.name() == 'EM_ANDAMENTO'}"
+                        th:action="@{/painel/concluir/{id}(id=${s.id})}"
+                        method="post"
+                        style="display:inline"
+                        th:id="'form-concluir-' + ${s.id}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button type="submit"
+                            th:id="'btn-concluir-' + ${s.id}"
+                            class="btn btn-outline-secondary btn-sm"
+                            title="Marcar como concluído"
+                            onclick="return confirm('Confirmar conclusão deste chamado?')">
+                      ✅ Concluir
+                    </button>
+                  </form>
+
+                  <!-- Editar -->
+                  <a th:href="@{/painel/editar/{id}(id=${s.id})}"
+                     th:id="'btn-editar-' + ${s.id}"
+                     class="btn btn-ghost btn-sm"
+                     title="Editar chamado">
+                    ✏️
+                  </a>
+
+                  <!-- Excluir -->
+                  <a th:href="@{/painel/excluir/{id}(id=${s.id})}"
+                     th:id="'btn-excluir-' + ${s.id}"
+                     class="btn btn-outline-danger btn-sm"
+                     title="Excluir chamado">
+                    🗑️
+                  </a>
+
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div><!-- /table-wrapper -->
+
+      <!-- Rodapé da tabela -->
+      <div class="d-flex justify-between align-center mt-md" th:if="${!#lists.isEmpty(solicitacoes)}">
+        <p class="text-sm text-muted">
+          Exibindo <strong th:text="${#lists.size(solicitacoes)}">0</strong> chamados
+        </p>
+      </div>
+
+    </div><!-- /container -->
+  </main>
+
+  <!-- FOOTER -->
+  <div th:replace="~{fragments :: footer}"></div>
+
+</body>
+</html>

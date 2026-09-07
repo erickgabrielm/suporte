@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Login', 'Acesse o painel técnico do Sistema de Suporte SENAI')}"></head>
+<body class="auth-page">
+
+  <!-- BANNER TOPO -->
+  <div class="auth-banner">
+    <div class="auth-banner-content animate-fade-up">
+      <div class="auth-logo" aria-hidden="true">🛠️</div>
+      <h1 class="auth-banner-title">SENAI Suporte</h1>
+      <p class="auth-banner-sub">Painel de Atendimento Técnico</p>
+    </div>
+  </div>
+
+  <!-- FORM BODY -->
+  <div class="auth-body">
+    <div class="auth-card">
+
+      <div class="auth-card-header">
+        <h2 class="auth-card-title">Bem-vindo de volta 👋</h2>
+        <p class="auth-card-subtitle text-muted">Entre com seu e-mail ou nome de usuário</p>
+      </div>
+
+      <div class="auth-card-body">
+
+        <!-- Erro de login -->
+        <div th:if="${param.error}" class="alert alert-error" role="alert">
+          <span class="alert-icon">⚠️</span>
+          <span>Credenciais inválidas. Verifique seu e-mail e senha.</span>
+        </div>
+
+        <!-- Logout confirmado -->
+        <div th:if="${param.logout}" class="alert alert-info" role="alert">
+          <span class="alert-icon">ℹ️</span>
+          <span>Você saiu com segurança. Até logo!</span>
+        </div>
+
+        <!-- Flash sucesso cadastro -->
+        <div th:if="${Sucesso}" class="alert alert-success" role="alert">
+          <span class="alert-icon">✅</span>
+          <span th:text="${Sucesso}"></span>
+        </div>
+
+        <div class="auth-divider"></div>
+
+        <!-- FORM LOGIN -->
+        <form th:action="@{/login}" method="post" id="form-login" novalidate>
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+          <div class="form-group">
+            <label for="username" class="form-label">
+              E-mail ou nome de usuário <span class="req">*</span>
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-control"
+              placeholder="seuemail@senai.br ou seu nome"
+              autocomplete="username"
+              required
+              autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">
+              Senha <span class="req">*</span>
+            </label>
+            <div class="input-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Sua senha"
+                autocomplete="current-password"
+                required>
+              <button type="button"
+                      class="input-group-btn"
+                      id="btn-toggle-pass"
+                      aria-label="Mostrar/ocultar senha"
+                      onclick="togglePassword()">👁️</button>
+            </div>
+          </div>
+
+          <div class="auth-link-bar mb-md">
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--text-muted);cursor:pointer;">
+              <input type="checkbox" name="remember-me" id="remember-me">
+              Lembrar-me
+            </label>
+          </div>
+
+          <button type="submit" id="btn-entrar" class="btn btn-primary btn-full btn-lg">
+            🔐 Entrar no Sistema
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          Não tem conta?
+          <a th:href="@{/cadastro}" id="link-cadastro">Cadastre-se aqui</a>
+        </div>
+
+        <div class="auth-footer mt-sm">
+          <a th:href="@{/}" style="color:var(--text-muted);font-size:0.8rem;">
+            ← Voltar para o site
+          </a>
+        </div>
+
+      </div><!-- /auth-card-body -->
+    </div><!-- /auth-card -->
+  </div><!-- /auth-body -->
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById('password');
+      const btn   = document.getElementById('btn-toggle-pass');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+  </script>
+
+</body>
+</html>

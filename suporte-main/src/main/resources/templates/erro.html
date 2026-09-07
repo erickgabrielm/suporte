@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Erro', 'Erro no Sistema de Suporte SENAI')}"></head>
+<body class="error-page">
+
+  <!-- NAVBAR -->
+  <div th:replace="~{fragments :: navbar}"></div>
+
+  <div class="error-wrap">
+    <div class="error-card animate-fade-up">
+
+      <div class="error-illustration" aria-hidden="true">⚠️</div>
+
+      <p class="error-code">Erro no Sistema</p>
+      <h1 class="error-title">Algo deu errado</h1>
+
+      <p class="error-desc" th:text="${mensagemErro != null} ? ${mensagemErro} : 'Ocorreu um erro inesperado. Nossa equipe foi notificada e irá investigar o problema.'">
+        Ocorreu um erro inesperado. Nossa equipe foi notificada e irá investigar o problema.
+      </p>
+
+      <div class="d-flex gap-md justify-center flex-wrap">
+        <a th:href="@{/}" id="btn-voltar-inicio" class="btn btn-primary btn-lg">
+          🏠 Voltar ao Início
+        </a>
+        <a th:href="@{/painel}" id="btn-voltar-painel" class="btn btn-outline-secondary btn-lg"
+           sec:authorize="isAuthenticated()">
+          ⚙️ Ir ao Painel
+        </a>
+        <button id="btn-voltar-historico" class="btn btn-ghost btn-lg" onclick="history.back()">
+          ← Página Anterior
+        </button>
+      </div>
+
+      <div class="alert alert-info mt-xl" style="text-align:left;max-width:420px;margin:32px auto 0;">
+        <span class="alert-icon">ℹ️</span>
+        <span>
+          Se o problema persistir, entre em contato com o suporte técnico diretamente
+          ou tente novamente em alguns instantes.
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div th:replace="~{fragments :: footer}"></div>
+
+</body>
+</html>

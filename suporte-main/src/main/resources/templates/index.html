@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head
+  th:replace="~{fragments :: head('Início', 'Sistema de Suporte Técnico SENAI — Abra chamados e acompanhe seu atendimento')}">
+</head>
+
+<body class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <div th:replace="~{fragments :: navbar}"></div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="animate-fade-up">
+        <div class="hero-tag">🏫 SENAI — Serviço Nacional de Aprendizagem Industrial</div>
+        <h1 class="hero-title">
+          Suporte Técnico
+          <span>ao seu alcance</span>
+        </h1>
+        <p class="hero-subtitle">
+          Abra chamados, acompanhe o andamento e receba atendimento especializado
+          do time técnico SENAI de forma rápida e eficiente.
+        </p>
+        <div class="hero-ctas">
+          <a th:href="@{/solicitacao}" id="btn-hero-abrir" class="btn btn-white btn-xl">
+            📋 Abrir Chamado
+          </a>
+          <a th:href="@{/login}" id="btn-hero-login" class="btn btn-white-outline btn-xl">
+            🔐 Área do Técnico
+          </a>
+        </div>
+
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-value">3</div>
+            <div class="hero-stat-label">Tipos de suporte</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+          <div>
+            <div class="hero-stat-value">24h</div>
+            <div class="hero-stat-label">Tempo médio de resposta</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+          <div>
+            <div class="hero-stat-value">100%</div>
+            <div class="hero-stat-label">Atendimentos registrados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="como-funciona">
+    <div class="container">
+      <div class="text-center mb-xl">
+        <span class="section-label">Como funciona</span>
+        <h2 class="section-title">Processo simples e eficiente</h2>
+        <p class="section-desc text-muted">
+          Em poucos passos, seu problema técnico será registrado e atendido pelo time especializado.
+        </p>
+      </div>
+
+      <div class="features-grid stagger">
+        <div class="feature-card fc-red">
+          <div class="feature-icon fi-red">📝</div>
+          <div class="feature-num">Passo 01</div>
+          <h3 class="feature-title">Abra um Chamado</h3>
+          <p class="feature-desc">
+            Preencha o formulário informando NIF, sala, código do patrimônio e descrição detalhada do problema.
+          </p>
+        </div>
+
+        <div class="feature-card fc-blue">
+          <div class="feature-icon fi-blue">⚡</div>
+          <div class="feature-num">Passo 02</div>
+          <h3 class="feature-title">Técnico Assume</h3>
+          <p class="feature-desc">
+            Um técnico especializado recebe a notificação, assume o chamado e inicia o atendimento.
+          </p>
+        </div>
+
+        <div class="feature-card fc-coral">
+          <div class="feature-icon fi-coral">🔧</div>
+          <div class="feature-num">Passo 03</div>
+          <h3 class="feature-title">Problema Resolvido</h3>
+          <p class="feature-desc">
+            O técnico conclui o atendimento com observações e o chamado é encerrado com sucesso.
+          </p>
+        </div>
+
+        <div class="feature-card fc-beige">
+          <div class="feature-icon fi-beige">📊</div>
+          <div class="feature-num">Tipos de suporte</div>
+          <h3 class="feature-title">Categorias</h3>
+          <p class="feature-desc">
+            Atendemos <strong>Informática</strong>, <strong>Elétrica</strong> e <strong>Zeladoria</strong>
+            em toda a instituição.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Strip -->
+  <section class="cta-strip">
+    <div class="container">
+      <h2>Tem um problema técnico?</h2>
+      <p>Registre agora — é rápido, simples e gratuito para todos do SENAI.</p>
+      <a th:href="@{/solicitacao}" id="btn-cta-abrir" class="btn btn-white btn-lg">
+        📋 Abrir Chamado Agora
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div th:replace="~{fragments :: footer}"></div>
+
+</body>
+
+</html>
